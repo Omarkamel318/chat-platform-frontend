@@ -1,7 +1,7 @@
 import { state } from '../state.js';
 import { showView } from '../router.js';
 import {getRoomDetails, getUser, GetOrCreateDirectRoom} from '../api.js';
-import {formatTime} from '../helpers.js';
+import {formatTime, toCamelCaseObject} from '../helpers.js';
 import {sendSocketMessage,onSocketEvent} from '../socket.js';
 import{renderRoomsList} from './rooms.js';
 import { openRoomOptionsModal } from './roomOptions.js';
@@ -262,6 +262,7 @@ export function registerRoomListeners() {
     onSocketEvent('room_closed', handleClosedStateChange);
     onSocketEvent('room_reopened', handleClosedStateChange);
     onSocketEvent('member_removed', handleMembersRemovedEvent);
+    onSocketEvent('member_left', handleMemberLeftEvent);
     
 }
 
@@ -355,6 +356,18 @@ function handleMembersRemovedEvent(data){
         renderSendForm();
     }
 
+}
+
+function handleMemberLeftEvent(data){
+    if(!currentRoom || state.currentRoomId !== data.chatRoomId)
+        return;
+
+    const leavedMember = toCamelCaseObject(data.member);
+
+    if(leavedMember.userId === state.currentUserId){
+        currentRoom.currentMemberIsActive = false;
+        renderSendForm();
+    }
 }
 
 function stopTyping() {
