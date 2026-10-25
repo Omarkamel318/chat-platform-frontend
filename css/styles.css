@@ -1,0 +1,47 @@
+:root {
+    --primary-color: #4f46e5;
+    --bg-light: #f5f6fa;
+    --bubble-mine: #4f46e5;
+    --bubble-mine-text: #ffffff;
+    --bubble-other: #ffffff;
+    --bubble-other-text: #1f2937;
+}
+
+body {
+    background-color: var(--bg-light);
+    height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.view {
+    height: 100vh;
+}
+
+.bubble-mine {
+    background-color: var(--bubble-mine);
+    color: var(--bubble-mine-text);
+}
+
+.bubble-other {
+    background-color: var(--bubble-other);
+    color: var(--bubble-other-text);
+    border: 1px solid #e5e7eb;
+}
+
+.menu-button{
+    width: 45px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.menu-button span{
+    width: 90%;
+    height: 2px;
+    background-color: black;
+    border-radius: 2px;
+}
