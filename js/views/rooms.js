@@ -24,7 +24,7 @@ async function renderRoomsView() {
         <div class="d-flex flex-column vh-100">
             <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
                 <h4 class="mb-0">Chats</h4>
-                <button class="btn btn-primary btn-sm" id="new-room-btn">+ New Room</button>
+                <button class="btn btn-primary btn-sm" id="new-room-btn">+ New</button>
             </div>
             <div id="rooms-list-container" class="flex-grow-1 overflow-auto"></div>
         </div>

@@ -10,8 +10,6 @@ let allUsers = [];
 export async function openCreateRoomModal() {    
     allUsers = ((await getAllUsers())).filter(u => u.userId !== state.currentUserId);
 
-    console.log(allUsers);
-
     const contentElement = document.getElementById('createRoomModalContent');
     contentElement.innerHTML = buildModalContent();
 
@@ -104,7 +102,6 @@ function bindGroupTabEvents() {
 
     function updateButtonState() {
         const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
-        console.log(checkboxes);
         createBtn.disabled = !anyChecked || nameInput.value.trim() === '';
     }
 

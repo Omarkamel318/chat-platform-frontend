@@ -146,15 +146,13 @@ async function handleExitRoom(){
 
 async function showAddMembersSection(){
     const candidateUsers = await GetCandidateUsersForRoom(state.currentRoomId);
-    console.log(candidateUsers);
-
 
     const sectionEl = document.getElementById('roomOptionsModalContent');
 
-    if (candidateUsers.length === 0) {
-        sectionEl.innerHTML = `<div class="text-muted text-center py-2">Everyone is already a member.</div>`;
-        return;
-    }
+    // if (candidateUsers.length === 0) {
+    //     sectionEl.innerHTML = `<div class="text-muted text-center py-2">Everyone is already a member.</div>`;
+    //     return;
+    // }
 
     sectionEl.innerHTML = `
         <div class="modal-header">  
@@ -163,30 +161,40 @@ async function showAddMembersSection(){
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
 
-        <div class="modal-body" style="max-height: 200px; overflow-y: auto;">
-            ${candidateUsers.map(user => `
-                <div class="d-flex align-items-center p-2 border-bottom">
-                    <input type="checkbox" class="form-check-input me-2 add-member-checkbox" data-user-id="${user.userId}">
+        <div class="modal-body">
+            <div>
+                ${candidateUsers.map(user => `
+                <div class="d-flex align-items-center p-2 border-bottom group-user-checkbox">
+                    <input ${!user.isCandidate ? 'checked disabled' : ''} type="checkbox" class="form-check-input me-2 add-member-checkbox" data-is-candidate="${user.isCandidate}" data-user-id="${user.userId}">
                     <span>${user.userName}</span>
                 </div>
             `).join('')}
-            <button class="btn btn-primary w-100 mt-2" id="confirm-add-members-btn">Add Selected</button>
+            </div>
+            <button disabled class="btn btn-primary w-100 mt-3" id="confirm-add-members-btn">Add Selected</button>
         </div>
     `;
 
-    document.getElementById('confirm-add-members-btn').addEventListener('click', () => handleAddMembers());
-    document.getElementById('back-modal-btn').addEventListener('click',()=>{
-    
-    renderMainView();
-    });
+    const addBtn = document.getElementById('confirm-add-members-btn');
+    const checkboxes = document.querySelectorAll('.group-user-checkbox input[type="checkbox"]');
+
+    function updateButtonState() {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.dataset.isCandidate === 'true' && cb.checked);
+        addBtn.disabled = !anyChecked;
+    }
+
+    checkboxes.forEach(cb => cb.addEventListener('change', updateButtonState));
+    addBtn.addEventListener('click', handleAddMembers);
+
+    document.getElementById('back-modal-btn').addEventListener('click', renderMainView);
 
 }
 
 async function handleAddMembers(){
     const selectedUserIds = Array.from(document.querySelectorAll('.add-member-checkbox'))
-        .filter(cb => cb.checked)
-        .map(cb => cb.dataset.userId);
+        .filter(cb =>cb.dataset.isCandidate === "true" && cb.checked )
+        .map(cb => cb.dataset.userId);       
 
+        
     if (selectedUserIds.length === 0)
         return;
 
@@ -280,8 +288,6 @@ function handleToggleAdminEvent(data){
         return;
 
     const updatedMember = toCamelCaseObject(data.member);
-    console.log(updatedMember);
-    console.log(roomMembersData.members);
 
     roomMembersData.members = roomMembersData.members.map( m =>
              m.userId === updatedMember.userId ? updatedMember : m);
